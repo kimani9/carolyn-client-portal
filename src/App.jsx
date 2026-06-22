@@ -48,9 +48,9 @@ const last4 = phone => (phone || '').replace(/\D/g, '').slice(-4) || Math.floor(
 
 const DEFAULT_RESOURCES = {
   seller:   [{ id: 'rs1', title: 'Carolyn\'s Home Seller Guide', url: 'https://bit.ly/m/CarolynHomeSellerGuide', type: 'guide' }],
-  buyer:    [{ id: 'rb1', title: 'Carolyn\'s Home Buyer Guide',  url: 'https://bit.ly/m/CarolynsBuyerGuide',    type: 'guide' }],
+  buyer:    [{ id: 'rb1', title: 'Carolyn\'s Home Buyer Guide',  url: 'https://bit.ly/m/CarolynsBuyerGuide',    type: 'guide', thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600' }],
   landlord: [{ id: 'rl2', title: 'Carolyn\'s Rentals', url: 'https://bit.ly/m/CarolynsRentals', type: 'guide' }, { id: 'rl1', title: 'Carolyn\'s Home Seller Guide', url: 'https://bit.ly/m/CarolynHomeSellerGuide', type: 'guide' }],
-  tenant:   [{ id: 'rt2', title: 'Carolyn\'s Rentals', url: 'https://bit.ly/m/CarolynsRentals', type: 'guide' }, { id: 'rt1', title: 'Carolyn\'s Home Buyer Guide',  url: 'https://bit.ly/m/CarolynsBuyerGuide',    type: 'guide' }],
+  tenant:   [{ id: 'rt2', title: 'Carolyn\'s Rentals', url: 'https://bit.ly/m/CarolynsRentals', type: 'guide' }, { id: 'rt1', title: 'Carolyn\'s Home Buyer Guide',  url: 'https://bit.ly/m/CarolynsBuyerGuide',    type: 'guide', thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600' }],
 }
 
 const firstName = name => (name || '').trim().split(' ')[0] || 'there'
@@ -121,7 +121,7 @@ const DEMO = [{
   welcomeMessage: DEFAULT_WELCOME.buyer('Sarah Johnson'),
   nextSteps: DEFAULT_NEXT_STEPS.buyer,
   resources: [
-    { id: 'rb1', title: "Carolyn's Home Buyer Guide", url: 'https://bit.ly/m/CarolynsBuyerGuide', type: 'guide' },
+    { id: 'rb1', title: "Carolyn's Home Buyer Guide", url: 'https://bit.ly/m/CarolynsBuyerGuide', type: 'guide', thumbnail: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600' },
     { id: 'r2', title: 'Mortgage pre-approval checklist', url: '#', type: 'checklist' },
   ],
   documents: [
@@ -523,13 +523,21 @@ function ClientPortal({ client, onLogout, onUpdate }) {
           </div>
         )}
         {tab === 'resources' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {(client.resources || []).map(r => (
-              <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" style={{ border: `1px solid ${T.border}`, borderRadius: '10px', padding: '14px 16px', background: T.card, display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'inherit' }}>
-                <span style={{ fontSize: '20px' }}>📎</span>
-                <p style={{ flex: 1, fontSize: '13px', fontWeight: 600, color: T.text }}>{r.title}</p>
-                <span style={{ fontSize: '11px', color: T.muted }}>{r.type} →</span>
-              </a>
+              r.thumbnail
+                ? <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" style={{ border: `1px solid ${T.border}`, borderRadius: '12px', overflow: 'hidden', background: T.card, textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                    <img src={r.thumbnail} alt={r.title} style={{ width: '100%', height: '160px', objectFit: 'cover', display: 'block' }} />
+                    <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <p style={{ flex: 1, fontSize: '14px', fontWeight: 600, color: T.text }}>{r.title}</p>
+                      <span style={{ fontSize: '12px', color: c.p, fontWeight: 600 }}>Open →</span>
+                    </div>
+                  </a>
+                : <a key={r.id} href={r.url} target="_blank" rel="noopener noreferrer" style={{ border: `1px solid ${T.border}`, borderRadius: '10px', padding: '14px 16px', background: T.card, display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'inherit' }}>
+                    <span style={{ fontSize: '20px' }}>📎</span>
+                    <p style={{ flex: 1, fontSize: '13px', fontWeight: 600, color: T.text }}>{r.title}</p>
+                    <span style={{ fontSize: '11px', color: T.muted }}>{r.type} →</span>
+                  </a>
             ))}
             {client.type === 'buyer' && <LendersSection />}
           </div>
