@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
-const PIN = '1234'
+const PIN = '6010'
 const AGENT = {
   name: 'Carolyn Githieya-Dennis',
   title: 'REALTOR®',
