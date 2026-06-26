@@ -577,6 +577,7 @@ function ClientPortal({ client, onLogout, onUpdate }) {
 function RealtorDashboard({ clients, setClients, onLogout }) {
   const [selId, setSelId] = useState(clients[0]?.id || null)
   const [preview, setPreview] = useState(null)
+  const [typeFilter, setTypeFilter] = useState('all')
   const sel = clients.find(c => c.id === selId)
   const upd = (field, val) => setClients(cs => cs.map(c => c.id === selId ? { ...c, [field]: val } : c))
   const steps = sel ? STEPS[sel.type] || [] : []
@@ -613,9 +614,16 @@ function RealtorDashboard({ clients, setClients, onLogout }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: '100vh' }}>
       <div style={{ background: '#1E2535', padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '4px 8px', marginBottom: '8px' }}>Clients</p>
-        {clients.map(c => (
-          <button key={c.id} onClick={() => setSelId(c.id)} style={{ padding: '8px 10px', borderRadius: '8px', border: 'none', background: selId === c.id ? 'rgba(255,255,255,0.1)' : 'none', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', padding: '4px 8px', marginBottom: '6px' }}>Clients</p>
+        <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ width: '100%', marginBottom: '10px', padding: '6px 8px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.07)', color: '#fff', fontSize: '12px', cursor: 'pointer' }}>
+          <option value="all">All clients</option>
+          <option value="buyer">Buyers</option>
+          <option value="seller">Sellers</option>
+          <option value="tenant">Tenants</option>
+          <option value="landlord">Landlords</option>
+        </select>
+        {clients.filter(c => typeFilter === 'all' || c.type === typeFilter).map(c => (
+          <button key={c.id} onClick={() => setSelId(c.id)} style={{ padding: '8px 10px', borderRadius: '8px', border: 'none', background: selId === c.id ? 'rgba(255,255,255,0.1)' : 'none', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
             <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: COLORS[c.type]?.p || '#888', flexShrink: 0 }} />
             <span style={{ fontSize: '13px', color: '#fff', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</span>
             {((c.favorites || []).length > 0 || Object.values(c.propertyComments || {}).some(v => v)) && <span style={{ fontSize: '11px' }}>🔔</span>}
