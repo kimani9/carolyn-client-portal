@@ -581,11 +581,10 @@ function RealtorDashboard({ clients, setClients, onLogout }) {
   const sel = clients.find(c => c.id === selId)
   const upd = (field, val) => setClients(cs => cs.map(c => c.id === selId ? { ...c, [field]: val } : c))
   const steps = sel ? STEPS[sel.type] || [] : []
-  const addClient = () => {
-    const type = 'buyer'
+  const addClient = (type = 'buyer') => {
     const name = 'New client'
     const nc = { id: uid(), name, type, clientPhone: '', accessCode: '', stage: 0, agentName: AGENT.name, agentPhone: AGENT.phone, agentEmail: AGENT.email, welcomeMessage: DEFAULT_WELCOME[type](name), nextSteps: [...DEFAULT_NEXT_STEPS[type]], resources: [...(DEFAULT_RESOURCES[type] || [])], documents: [], properties: [], favorites: [], propertyComments: {} }
-    setClients(cs => [...cs, nc]); setSelId(nc.id)
+    setClients(cs => [...cs, nc]); setSelId(nc.id); setTypeFilter(type)
   }
   const delClient = id => { setClients(cs => cs.filter(c => c.id !== id)); setSelId(clients.find(c => c.id !== id)?.id || null) }
 
@@ -629,7 +628,15 @@ function RealtorDashboard({ clients, setClients, onLogout }) {
             {((c.favorites || []).length > 0 || Object.values(c.propertyComments || {}).some(v => v)) && <span style={{ fontSize: '11px' }}>🔔</span>}
           </button>
         ))}
-        <button onClick={addClient} style={{ margin: '8px 0 0', padding: '8px 10px', borderRadius: '8px', border: '1px dashed rgba(255,255,255,0.2)', background: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>+ Add client</button>
+        <div style={{ margin: '8px 0 0', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', paddingLeft: '2px' }}>Add client</p>
+          {[['buyer','Buyer'],['seller','Seller'],['tenant','Tenant'],['landlord','Landlord']].map(([type, label]) => (
+            <button key={type} onClick={() => addClient(type)} style={{ width: '100%', padding: '7px 10px', borderRadius: '7px', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+              <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: COLORS[type]?.p || '#888', flexShrink: 0 }} />
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)' }}>+ {label}</span>
+            </button>
+          ))}
+        </div>
         <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
           <button onClick={onLogout} style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: 'none', background: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', fontSize: '13px', textAlign: 'left' }}>Log out</button>
         </div>
